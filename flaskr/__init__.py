@@ -1,6 +1,8 @@
 import os
 
 from flask import Flask
+from dotenv import load_dotenv
+load_dotenv()
 
 from . import (db, auth, blog)
 
@@ -9,7 +11,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY=os.urandom(16), # Random key
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        DATABASE=os.getenv("DATABASE_URL")#os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
 
     if test_config is None:
