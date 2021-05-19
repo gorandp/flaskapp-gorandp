@@ -2,14 +2,14 @@ import os
 
 from flask import Flask
 
-# from . import (db, auth, blog)
+from . import (db, auth, blog)
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY=os.urandom(16), # Random key
-        # DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
 
     if test_config is None:
@@ -26,17 +26,17 @@ def create_app(test_config=None):
         pass
 
     # a simple page that says hello
-    @app.route('/')
+    @app.route('/hello')
     def hello():
         return 'Hello, World!'
 
-    # db.init_app(app)
+    db.init_app(app)
 
     # Register Auth Blueprint
-    # app.register_blueprint(auth.bp)
+    app.register_blueprint(auth.bp)
 
     # Register Blog Blueprint and set its endpoint and url
-    # app.register_blueprint(blog.bp)
-    # app.add_url_rule('/', endpoint='index')
+    app.register_blueprint(blog.bp)
+    app.add_url_rule('/', endpoint='index')
 
     return app
