@@ -1,13 +1,13 @@
 import functools
-
+from bson.objectid import ObjectId
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
-
 from .tools import char_limit
+
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -29,17 +29,16 @@ def register():
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
-        elif db.execute(
-            'SELECT id FROM user WHERE username = ?', (username,)
-        ).fetchone() is not None:
+        elif db.database["users"].find_one({
+            "username": username
+        }) is not None:
             error = 'User {} is already registered.'.format(username)
 
         if error is None:
-            db.execute(
-                'INSERT INTO user (username, password) VALUES (?, ?)',
-                (username, generate_password_hash(password))
-            )
-            db.commit()
+            db.database["users"].insert_one({
+                "username": username,
+                "password": generate_password_hash(password)
+            })
             return redirect(url_for('auth.login'))
 
         flash(error)
@@ -54,9 +53,10 @@ def login():
         password = request.form['password']
         db = get_db()
         error = None
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
+        user = db.database["users"].find_one({
+            "username": username
+        })
+        user['_id'] = str(user['_id'])
 
         if user is None:
             error = 'Incorrect username.'
@@ -65,7 +65,7 @@ def login():
 
         if error is None:
             session.clear()
-            session['user_id'] = user['id']
+            session['user_id'] = user['_id']
             return redirect(url_for('index'))
 
         flash(error)
@@ -80,9 +80,11 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
+        user = get_db().database["users"].find_one({
+            "_id": ObjectId(user_id)
+        })
+        user['_id'] = str(user['_id'])
+        g.user = user
 
 
 @bp.route('/logout')
