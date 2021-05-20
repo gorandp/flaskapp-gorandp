@@ -48,7 +48,8 @@ def create():
                 "title": title,
                 "body": body,
                 "authorId": ObjectId(g.user['_id']),
-                "created": datetime.utcnow()
+                "created": datetime.utcnow(),
+                "username": g.user['username']
             })
             return redirect(url_for('blog.index'))
 
