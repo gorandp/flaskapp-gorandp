@@ -56,13 +56,13 @@ def login():
         user = db.database["users"].find_one({
             "username": username
         })
-        user['_id'] = str(user['_id'])
 
         if user is None:
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password):
             error = 'Incorrect password.'
 
+        user['_id'] = str(user['_id'])
         if error is None:
             session.clear()
             session['user_id'] = user['_id']
