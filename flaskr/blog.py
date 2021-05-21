@@ -36,8 +36,8 @@ def create():
             error = 'Title is required.'
 
         if error is None:
-            e = char_limit(title, 50, 'Title')
-            e += char_limit(body, 500, 'Body')
+            e = char_limit(title, 50, 'Título', 'o')
+            e += char_limit(body, 500, 'Texto', 'o')
             if e:
                 error = e
 
@@ -85,8 +85,8 @@ def update(id):
             error = 'Title is required.'
 
         if error is None:
-            e = char_limit(title, 50, 'Title')
-            e += char_limit(body, 500, 'Body')
+            e = char_limit(title, 50, 'Título', 'o')
+            e += char_limit(body, 500, 'Texto', 'o')
             if e:
                 error = e
 
