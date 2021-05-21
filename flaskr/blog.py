@@ -59,8 +59,9 @@ def create():
 
 def get_post(id, check_author=True):
     post = get_db().database["posts"].find_one({"_id": ObjectId(id)})
-    post['_id'] = str(post['_id'])
-    post['authorId'] = str(post['authorId'])
+    if post is not None:
+        post['_id'] = str(post['_id'])
+        post['authorId'] = str(post['authorId'])
 
     if post is None:
         abort(404, "Post id {0} doesn't exist.".format(id))
