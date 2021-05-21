@@ -20,15 +20,15 @@ def register():
         db = get_db()
         error = None
 
-        e = char_limit(username, 15, 'Username')
-        e += char_limit(password, 50, 'Password')
+        e = char_limit(username, 15, 'El nombre de usuario', 'o')
+        e += char_limit(password, 50, 'La contraseña', 'a')
         if e:
             error = e
 
         if not username:
-            error = 'Username is required.'
+            error = 'Ingrese un nombre de usuario.'
         elif not password:
-            error = 'Password is required.'
+            error = 'Ingrese una contraseña.'
         elif db.database["users"].find_one({
             "username": username
         }) is not None:
@@ -58,12 +58,12 @@ def login():
         })
 
         if user is None:
-            error = 'Incorrect username.'
+            error = 'Usuario incorrecto.'
         elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            error = 'Contraseña incorrecta.'
 
-        user['_id'] = str(user['_id'])
         if error is None:
+            user['_id'] = str(user['_id'])
             session.clear()
             session['user_id'] = user['_id']
             return redirect(url_for('index'))
