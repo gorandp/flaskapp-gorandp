@@ -16,7 +16,7 @@ bp = Blueprint('blog', __name__)
 def index():
     db = get_db()
     posts = db.database["posts"].find()
-    posts = sorted(posts, key=lambda post: post["created"])
+    posts = sorted(posts, key=lambda post: post["created"], reverse=True)
     for p in posts:
         p['_id'] = str(p['_id'])
         p['authorId'] = str(p['authorId'])
