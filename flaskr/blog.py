@@ -3,7 +3,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
@@ -20,6 +20,7 @@ def index():
     for p in posts:
         p['_id'] = str(p['_id'])
         p['authorId'] = str(p['authorId'])
+        p['created'] = p['created'] - timedelta(hours=3)
     return render_template('blog/index.html', posts=posts)
 
 
