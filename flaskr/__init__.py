@@ -9,7 +9,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY=os.urandom(16), # Random key
+        SECRET_KEY=os.getenv('FLASK_SECRET_KEY'), # Random key
         DB_CONNECTION_STRING=os.getenv('DB_CONNECTION_STRING'),
     )
 
